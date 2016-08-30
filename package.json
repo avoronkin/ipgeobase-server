@@ -1,0 +1,17 @@
+{
+  "name": "ipgeobase-server",
+  "version": "1.0.0",
+  "description": "ipgeobase server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "finalhandler": "^0.5.0",
+    "geotools": "^0.1.0",
+    "qs": "^6.2.1",
+    "router": "^1.1.4"
+  }
+}
