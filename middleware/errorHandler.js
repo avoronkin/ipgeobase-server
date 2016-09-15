@@ -1,9 +1,10 @@
 'use strict';
-var boom = require('boom')
+
+var boom = require('boom');
 
 module.exports = [function(err, req, res, next) {
   if (err.isBoom) {
-    next(err)
+    next(err);
   } else if (err.isJoi && err.details) {
     var error_descriptions = err.details.map(function(detail) {
       if (detail.path.indexOf('query.') > -1) {
@@ -15,11 +16,11 @@ module.exports = [function(err, req, res, next) {
       } else {
         return detail.message + '.';
       }
-    })
+    });
 
-    next(boom.badRequest(error_descriptions))
+    next(boom.badRequest(error_descriptions));
   } else {
-    next(boom.badImplementation())
+    next(boom.badImplementation());
   }
 }, function(err, req, res, next) {
   if (err.isBoom) {

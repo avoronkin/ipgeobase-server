@@ -1,17 +1,14 @@
 'use strict';
-var geo = require('geotools');
-var Router = require('router');
-var Joi = require('joi');
 
+var geo = require('geotools');
 var version = require('./middleware/version');
 var validator = require('./middleware/validator');
-var errorHandler = require('./middleware/errorHandler');
-var queryParser = require('./middleware/queryParser');
-var error404 = require('./middleware/error404');
+var Joi = require('joi');
+var express = require('express')
 
-var router = module.exports = Router();
-
-router.use(queryParser());
+var router = module.exports = express.Router({
+  mergeParams: true
+});
 
 var reqSchema = {
   query: {
@@ -21,13 +18,9 @@ var reqSchema = {
   }
 };
 
-router.get('/:version?/', version('1'), validator(reqSchema), function(req, res, next) {
+router.get('/', version('1'), validator(reqSchema), function(req, res, next) {
   var ip = req.query.ip;
   var result = geo.lookup(ip);
 
   res.json(result);
 });
-
-router.use('*', error404);
-
-router.use(errorHandler);
