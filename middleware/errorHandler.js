@@ -30,6 +30,8 @@ module.exports = [function(err, req, res, next) {
       message: err.output.payload.message,
     });
   } else {
+    console.error(err)
+    console.error(err.stack)
     res.statusCode = 500;
     res.json({
       error: 'Internal Server Error',

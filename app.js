@@ -2,9 +2,12 @@
 
 var errorHandler = require('./middleware/errorHandler');
 var error404 = require('./middleware/error404');
-var router = require('./router')
+var queryParser = require('./middleware/queryParser');
+var router = require('./router');
 
-var app = module.exports = require('express')();
+var app = module.exports = require('router')();
+
+app.use(queryParser())
 
 app.use('/:version?/', router);
 

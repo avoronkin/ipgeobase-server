@@ -4,9 +4,9 @@ var geo = require('geotools');
 var version = require('./middleware/version');
 var validator = require('./middleware/validator');
 var Joi = require('joi');
-var express = require('express')
+var Router = require('router')
 
-var router = module.exports = express.Router({
+var router = module.exports = Router({
   mergeParams: true
 });
 
