@@ -20,9 +20,12 @@ module.exports = [function(err, req, res, next) {
 
     next(boom.badRequest(error_descriptions));
   } else {
+    console.error(err);
+    console.error(err.stack);
     next(boom.badImplementation());
   }
 }, function(err, req, res, next) {
+
   if (err.isBoom) {
     res.statusCode = err.output.payload.statusCode;
     res.json({
@@ -30,8 +33,6 @@ module.exports = [function(err, req, res, next) {
       message: err.output.payload.message,
     });
   } else {
-    console.error(err)
-    console.error(err.stack)
     res.statusCode = 500;
     res.json({
       error: 'Internal Server Error',
