@@ -11,15 +11,20 @@ var router = module.exports = Router();
 
 var reqSchema = {
   query: {
-    ip: Joi.string().required().ip({
-      version: ['ipv4']
-    })
+    ip: Joi
+      .string()
+      .required()
+      .ip({
+        version: ['ipv4']
+      })
+      .description('ip param description')
   }
 };
 
 router.get('/',
   meta({
-    name: 'ip',
+    operationId: 'getLocationByIp',
+    path: '/ip',
     description: 'geolocation by ip',
     validate: reqSchema,
     version: '1,2'

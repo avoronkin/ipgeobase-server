@@ -1,6 +1,6 @@
 'use strict';
 var Router = require('router');
-var meta = require('./middleware/meta')
+var meta = require('./middleware/meta');
 
 module.exports = function() {
   var router = Router({

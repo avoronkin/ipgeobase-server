@@ -8,11 +8,12 @@ var router = module.exports = Router();
 
 router.get('/',
   meta({
-    name: 'docs',
+    operationId: 'docs',
+    path: '/docs',
     description: 'docs',
     version: '1,2'
   }),
   version(),
   function(req, res, next) {
-    res.json(router.getMeta());
+    res.json(require('../middleware/meta').getSpec());
   });

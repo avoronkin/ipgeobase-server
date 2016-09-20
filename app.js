@@ -5,7 +5,7 @@ var error404 = require('./middleware/error404');
 var queryParser = require('./middleware/queryParser');
 var router = require('./routes');
 
-var app = module.exports = require('router')();
+var app = module.exports = require('./Router')();
 
 app.use(queryParser())
 

@@ -7,7 +7,7 @@ module.exports = function(schema) {
     if (req.meta.validate) {
       Joi.validate({
         query: req.query,
-        params: req.params,
+        path: req.params,
         body: req.body
       }, req.meta.validate, {
         abortEarly: false,

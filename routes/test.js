@@ -10,8 +10,23 @@ var router = module.exports = Router();
 
 router.get('/',
   meta({
-    name: 'test',
-    description: 'test description',
+    operationId: 'readTest',
+    path: '/test',
+    description: 'read test description',
+    version: '2'
+  }),
+  version(),
+  function(req, res, next) {
+    res.json({
+      test: true
+    });
+  });
+
+router.post('/',
+  meta({
+    operationId: 'createTest',
+    path: '/test',
+    description: 'create test description',
     version: '2'
   }),
   version(),

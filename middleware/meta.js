@@ -24,10 +24,12 @@ module.exports.extend = function(app) {
         isMeta: true
       }).value()
 
-      if (meta) {
-        _meta[method + ' ' + path] = meta.config;
+      var operationId = _.get(meta, 'config.operationId')
+
+      if (operationId) {
+        meta.config.method = method;
+        _meta[operationId] = meta.config;
       }
-      console.log('_meta', _meta)
 
       return _fn.apply(this, arguments);
     };
@@ -35,5 +37,40 @@ module.exports.extend = function(app) {
 
   app.getMeta = function() {
     return _meta;
-  }
+  };
+
 };
+
+
+module.exports.getSpec = function() {
+  var paths = {}
+  _.each(_meta, function(meta) {
+    var parametrs = []
+    if (meta.validate) {
+      _.each(meta.validate, function(params, place) {
+        _.each(params, function(value, key) {
+          console.dir(value, {
+            depth: 10
+          })
+          parametrs.push({
+            name: key,
+            in: place,
+            type: value._type,
+            required: _.get(value, '_flags.presence') === 'required',
+            description: _.get(value, '_description', '')
+          })
+        })
+      })
+    }
+
+    paths[meta.path] = paths[meta.path] || {}
+    paths[meta.path][meta.method] = {
+      description: meta.description,
+      operationId: meta.operationId,
+      produces: meta.produces || ['application/json'],
+      parametrs: parametrs
+    }
+  })
+
+  return paths
+}
