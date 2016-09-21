@@ -45,21 +45,84 @@ module.exports.extend = function(app) {
 module.exports.getSpec = function() {
   var paths = {}
   _.each(_meta, function(meta) {
-    var parametrs = []
+    var parameters = []
     if (meta.validate) {
       _.each(meta.validate, function(params, place) {
-        _.each(params, function(value, key) {
-          console.dir(value, {
+        if (place === 'body') {
+          console.dir(params, {
             depth: 10
           })
-          parametrs.push({
-            name: key,
-            in: place,
-            type: value._type,
-            required: _.get(value, '_flags.presence') === 'required',
-            description: _.get(value, '_description', '')
+
+          if (params.isJoi) {
+            if (params._type === 'object') {
+              var bodySchema = {
+                type: 'object',
+                description: _.get(params, '_description', ''),
+                required: [],
+                properties: {}
+              };
+
+              _.each(_.get(params, '_inner.children'), function(item) {
+                var property = {
+                  type: _.get(item, 'schema._type'),
+                  description: _.get(item, 'schema._description', ''),
+                }
+
+                property.default = _.get(item, 'schema._flags.default', undefined);
+
+                var required = _.get(item, 'schema._flags.presence') === 'required';
+                if (required) {
+                  bodySchema.required.push(item.key);
+                }
+
+                var valids = _.get(item, 'schema._valids._set');
+                if (valids && valids.length) {
+                  property.enum = valids;
+                }
+
+                _.set(bodySchema, 'properties.' + item.key, property);
+              })
+            }
+
+          } else {
+            var bodySchema = {
+              type: 'object',
+              required: [],
+              properties: {}
+            };
+
+            _.each(params, function(value, key) {
+              _.set(bodySchema, 'properties.' + key, {
+                type: value._type,
+                description: _.get(value, '_description', '')
+              });
+
+              if (_.get(value, '_flags.presence') === 'required') {
+                bodySchema.required.push(key);
+              }
+            });
+          }
+
+          parameters.push({
+            in: 'body',
+            schema: bodySchema
+          });
+
+        } else if (place === 'query' || place === 'path') {
+          _.each(params, function(value, key) {
+            // console.dir(value, {
+            //   depth: 10
+            // })
+            parameters.push({
+              name: key,
+              in: place,
+              type: value._type,
+              required: _.get(value, '_flags.presence') === 'required',
+              description: _.get(value, '_description', '')
+            })
           })
-        })
+
+        }
       })
     }
 
@@ -68,7 +131,7 @@ module.exports.getSpec = function() {
       description: meta.description,
       operationId: meta.operationId,
       produces: meta.produces || ['application/json'],
-      parametrs: parametrs
+      parameters: parameters
     }
   })
 
