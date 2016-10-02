@@ -1,13 +1,12 @@
-'use strict';
-var Router = require('router');
-var meta = require('./middleware/meta');
+const routerFactory = require('router');
+const meta = require('./middleware/meta');
 
-module.exports = function() {
-  var router = Router({
-    mergeParams: true
+module.exports = function rf () {
+  const router = routerFactory({
+    mergeParams: true,
   });
 
-  meta.extend(router)
+  meta.extend(router);
 
-  return router
-}
+  return router;
+};

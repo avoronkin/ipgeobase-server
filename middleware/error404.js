@@ -1,7 +1,5 @@
-'use strict';
+const boom = require('boom');
 
-var boom = require('boom');
-
-module.exports = function(req, res, next) {
+module.exports = function error404Middleware (req, res, next) {
   next(boom.notFound('Not found'));
 };

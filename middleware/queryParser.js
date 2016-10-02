@@ -1,11 +1,10 @@
-'use strict';
-var qs = require('qs');
+/* eslint no-param-reassign: 0, no-underscore-dangle: 0 */
+const url = require('url');
 
-module.exports = function() {
-  return function(req, res, next) {
-    var query = req._parsedUrl && req._parsedUrl.query;
-    req.query = qs.parse(query);
+module.exports = function queryParserMiddleware (req, res, next) {
+  const parsedUrl = url.parse(req.url, true);
 
-    next();
-  };
+  req.query = parsedUrl.query;
+
+  next();
 };

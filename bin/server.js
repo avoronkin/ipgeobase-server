@@ -1,28 +1,35 @@
 #!/usr/bin/env node
-'use strict';
-var finalhandler = require('finalhandler');
-var http = require('http');
-var app = require('../app');
-var PORT = process.env.PORT || 8888;
+/* eslint no-console: 0 */
+const finalhandler = require('finalhandler');
+const http = require('http');
+const app = require('../app');
 
-http.ServerResponse.prototype.text = function(data) {
+const PORT = process.env.PORT || 8888;
+
+http.ServerResponse.prototype.status = function status (code) {
+  if (code) {
+    this.statusCode = code;
+  }
+};
+
+http.ServerResponse.prototype.text = function resText (data) {
   this.setHeader('Content-Type', 'text/plain; charset=utf-8');
   this.end(data);
 };
 
-http.ServerResponse.prototype.json = function(data) {
+http.ServerResponse.prototype.json = function resJson (data) {
   this.setHeader('Content-Type', 'application/json; charset=utf-8');
   this.end(JSON.stringify(data));
 };
 
-var server = http.createServer(function(req, res) {
+const server = http.createServer((req, res) => {
   app(req, res, finalhandler(req, res));
 });
 
-server.listen(PORT, function(err) {
+server.listen(PORT, (err) => {
   if (err) {
     console.error(err);
   } else {
-    console.log('server listening on port ' + PORT);
+    console.log(`server listening on port ${PORT}`);
   }
 });

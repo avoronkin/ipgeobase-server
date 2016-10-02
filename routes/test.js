@@ -1,12 +1,10 @@
-'use strict';
+const version = require('../middleware/version');
+// const validate = require('../middleware/validate');
+const meta = require('../middleware/meta').middleware;
+const Joi = require('joi');
+const routerFactory = require('../Router');
 
-var version = require('../middleware/version');
-var validate = require('../middleware/validate');
-var meta = require('../middleware/meta').middleware;
-var Joi = require('joi');
-var Router = require('../Router');
-
-var router = module.exports = Router();
+const router = module.exports = routerFactory();
 
 
 router.get('/',
@@ -17,13 +15,13 @@ router.get('/',
     version: '2',
   }),
   version(),
-  function(req, res, next) {
+  (req, res) => {
     res.json({
-      test: true
+      test: true,
     });
   });
 
-var reqSchema = {
+const reqSchema = {
   body: Joi.object()
     .description('dbshdbshdb description')
     .keys({
@@ -31,13 +29,13 @@ var reqSchema = {
       test: Joi.string()
         .description('test param description')
         .default('a')
-        .valid('b', 'B', 'a', 'd')
+        .valid('b', 'B', 'a', 'd'),
     }),
   path: {
     id: Joi.string()
       .required()
-      .description('ID of pet to use')
-  }
+      .description('ID of pet to use'),
+  },
 };
 
 router.post('/:id',
@@ -46,11 +44,11 @@ router.post('/:id',
     path: '/test/{id}',
     description: 'create test description',
     validate: reqSchema,
-    version: '2'
+    version: '2',
   }),
   version(),
-  function(req, res, next) {
+  (req, res) => {
     res.json({
-      test: true
+      test: true,
     });
   });

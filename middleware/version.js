@@ -1,20 +1,17 @@
-'use strict';
+/* eslint no-param-reassign: 0, consistent-return: 0 */
+module.exports = function configureVersionMiddleware () {
+  return function versionMiddleware (req, res, next) {
+    if (!req.meta || !req.meta.version) return next();
 
-module.exports = function() {
-  return function(req, res, next) {
-    console.log('req meta', req.meta)
-    if (req.meta.version) {
-      var version = req.version = (req.params.version || req.query.version) || '1';
-      var versions = req.meta.version.split(',')
-      console.log(version, versions)
+    const version = (req.params.version || req.query.version) || '1';
+    const versions = req.meta.version.split(',');
 
-      if (versions.indexOf(version) + 1) {
-        return next();
-      } else {
-        return next('route');
-      }
+    req.version = version;
+
+    if (versions.indexOf(version) !== -1) {
+      next();
+    } else {
+      next('router');
     }
-
-    next()
   };
 };

@@ -1,29 +1,29 @@
-'use strict';
-var Router = require('../Router');
-var version = require('../middleware/version');
-var validate = require('../middleware/validate');
+const routerFactory = require('../Router');
+const version = require('../middleware/version');
+// const validate = require('../middleware/validate');
+const meta = require('../middleware/meta');
 
-var meta = require('../middleware/meta').middleware;
-
-var router = module.exports = Router();
+const metaMiddleware = meta.middleware;
+const getSpec = meta.getSpec;
+const router = module.exports = routerFactory();
 
 router.get('/',
-  meta({
+  metaMiddleware({
     operationId: 'docs',
     path: '/docs',
     description: 'docs',
-    version: '1,2'
+    version: '1,2',
   }),
   version(),
-  function(req, res, next) {
+  (req, res) => {
     res.json({
       swagger: '2.0',
       info: {
         title: 'Simple API overview',
-        version: '2'
+        version: '2',
       },
       host: 'localhost:8888',
       basePath: '/2',
-      paths: require('../middleware/meta').getSpec()
+      paths: getSpec(),
     });
   });
